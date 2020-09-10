@@ -1,0 +1,27 @@
+name: Deploy Web Docs
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Build Docs
+        run: |
+          npx vuepress build
+          cp favicon.ico ./.vuepress/dist
+
+      - name: Deploy Github
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.TYPESCRIPT_DOCS_TOKEN }}
+          publish_dir: ./.vuepress/dist
+          publish_branch: gh-pages
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Deployed from bot > ${{ github.event.head_commit.message }}"
