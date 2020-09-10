@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>改进类型推断和Promise.all | TypeScript Handbook（中文版）</title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="《TypeScript Handbook》（中文版）TypeScript使用手册">
+    <link rel="preload" href="/typescript/assets/css/0.styles.b79b352c.css" as="style"><link rel="preload" href="/typescript/assets/js/app.0e06d88a.js" as="script"><link rel="preload" href="/typescript/assets/js/2.2c62d7e6.js" as="script"><link rel="preload" href="/typescript/assets/js/112.6bc6525b.js" as="script"><link rel="prefetch" href="/typescript/assets/js/10.d6e8d454.js"><link rel="prefetch" href="/typescript/assets/js/100.329f4650.js"><link rel="prefetch" href="/typescript/assets/js/101.2ac7a921.js"><link rel="prefetch" href="/typescript/assets/js/102.09822bc3.js"><link rel="prefetch" href="/typescript/assets/js/103.71daab4d.js"><link rel="prefetch" href="/typescript/assets/js/104.3ebe007a.js"><link rel="prefetch" href="/typescript/assets/js/105.86676a1f.js"><link rel="prefetch" href="/typescript/assets/js/106.52689b48.js"><link rel="prefetch" href="/typescript/assets/js/107.be09c369.js"><link rel="prefetch" href="/typescript/assets/js/108.630af0de.js"><link rel="prefetch" href="/typescript/assets/js/109.00f4b774.js"><link rel="prefetch" href="/typescript/assets/js/11.627db9ad.js"><link rel="prefetch" href="/typescript/assets/js/110.d3291ae0.js"><link rel="prefetch" href="/typescript/assets/js/111.1e5fa25d.js"><link rel="prefetch" href="/typescript/assets/js/113.44ce700d.js"><link rel="prefetch" href="/typescript/assets/js/114.ecd730c9.js"><link rel="prefetch" href="/typescript/assets/js/115.ecd4d4b4.js"><link rel="prefetch" href="/typescript/assets/js/116.4025e3f8.js"><link rel="prefetch" href="/typescript/assets/js/117.4c77c608.js"><link rel="prefetch" href="/typescript/assets/js/118.df8614a5.js"><link rel="prefetch" href="/typescript/assets/js/119.a63268d6.js"><link rel="prefetch" href="/typescript/assets/js/12.8986ec8b.js"><link rel="prefetch" href="/typescript/assets/js/120.aaab5378.js"><link rel="prefetch" href="/typescript/assets/js/121.7e1cfd4e.js"><link rel="prefetch" href="/typescript/assets/js/122.749c0380.js"><link rel="prefetch" href="/typescript/assets/js/123.d233ea5d.js"><link rel="prefetch" href="/typescript/assets/js/124.6623e08c.js"><link rel="prefetch" href="/typescript/assets/js/125.a3177cd8.js"><link rel="prefetch" href="/typescript/assets/js/126.db6b0b70.js"><link rel="prefetch" href="/typescript/assets/js/127.558cd032.js"><link rel="prefetch" href="/typescript/assets/js/128.41834463.js"><link rel="prefetch" href="/typescript/assets/js/129.7506d3ad.js"><link rel="prefetch" href="/typescript/assets/js/13.1ca2ea79.js"><link rel="prefetch" href="/typescript/assets/js/130.30275c7f.js"><link rel="prefetch" href="/typescript/assets/js/131.dbb79c24.js"><link rel="prefetch" href="/typescript/assets/js/132.8e278c87.js"><link rel="prefetch" href="/typescript/assets/js/133.ea147999.js"><link rel="prefetch" href="/typescript/assets/js/134.8915eb1c.js"><link rel="prefetch" href="/typescript/assets/js/135.b27a24cb.js"><link rel="prefetch" href="/typescript/assets/js/136.ef81f91c.js"><link rel="prefetch" href="/typescript/assets/js/137.036a2055.js"><link rel="prefetch" href="/typescript/assets/js/138.98675367.js"><link rel="prefetch" href="/typescript/assets/js/14.37c7f492.js"><link rel="prefetch" href="/typescript/assets/js/15.38f4f28c.js"><link rel="prefetch" href="/typescript/assets/js/16.a64c264e.js"><link rel="prefetch" href="/typescript/assets/js/17.91d8ea8f.js"><link rel="prefetch" href="/typescript/assets/js/18.51ac87b7.js"><link rel="prefetch" href="/typescript/assets/js/19.91dbdd1e.js"><link rel="prefetch" href="/typescript/assets/js/20.6d2e4055.js"><link rel="prefetch" href="/typescript/assets/js/21.9682215b.js"><link rel="prefetch" href="/typescript/assets/js/22.fd522303.js"><link rel="prefetch" href="/typescript/assets/js/23.e7049527.js"><link rel="prefetch" href="/typescript/assets/js/24.05f4c52d.js"><link rel="prefetch" href="/typescript/assets/js/25.eb553563.js"><link rel="prefetch" href="/typescript/assets/js/26.752cb5d4.js"><link rel="prefetch" href="/typescript/assets/js/27.d864004e.js"><link rel="prefetch" href="/typescript/assets/js/28.cbda47ca.js"><link rel="prefetch" href="/typescript/assets/js/29.84ea3529.js"><link rel="prefetch" href="/typescript/assets/js/3.8bda1f40.js"><link rel="prefetch" href="/typescript/assets/js/30.7afc7e45.js"><link rel="prefetch" href="/typescript/assets/js/31.dd922087.js"><link rel="prefetch" href="/typescript/assets/js/32.1d7d8ad3.js"><link rel="prefetch" href="/typescript/assets/js/33.989f1a5d.js"><link rel="prefetch" href="/typescript/assets/js/34.636c7746.js"><link rel="prefetch" href="/typescript/assets/js/35.4a3a33da.js"><link rel="prefetch" href="/typescript/assets/js/36.261ae21c.js"><link rel="prefetch" href="/typescript/assets/js/37.1a0b0b21.js"><link rel="prefetch" href="/typescript/assets/js/38.a94e2afa.js"><link rel="prefetch" href="/typescript/assets/js/39.63df6ee0.js"><link rel="prefetch" href="/typescript/assets/js/4.4c9829e0.js"><link rel="prefetch" href="/typescript/assets/js/40.b3da223e.js"><link rel="prefetch" href="/typescript/assets/js/41.ffb1bfe2.js"><link rel="prefetch" href="/typescript/assets/js/42.2fb4202a.js"><link rel="prefetch" href="/typescript/assets/js/43.81f36f39.js"><link rel="prefetch" href="/typescript/assets/js/44.0cc83589.js"><link rel="prefetch" href="/typescript/assets/js/45.896194f5.js"><link rel="prefetch" href="/typescript/assets/js/46.6ebccb0e.js"><link rel="prefetch" href="/typescript/assets/js/47.02728ef6.js"><link rel="prefetch" href="/typescript/assets/js/48.a87676e7.js"><link rel="prefetch" href="/typescript/assets/js/49.7bb9cd68.js"><link rel="prefetch" href="/typescript/assets/js/5.78374d20.js"><link rel="prefetch" href="/typescript/assets/js/50.2791a9aa.js"><link rel="prefetch" href="/typescript/assets/js/51.4e54a96f.js"><link rel="prefetch" href="/typescript/assets/js/52.2fa6dca5.js"><link rel="prefetch" href="/typescript/assets/js/53.0fb7d1cf.js"><link rel="prefetch" href="/typescript/assets/js/54.577fd1a9.js"><link rel="prefetch" href="/typescript/assets/js/55.6919b9ac.js"><link rel="prefetch" href="/typescript/assets/js/56.14b87581.js"><link rel="prefetch" href="/typescript/assets/js/57.f50d71ab.js"><link rel="prefetch" href="/typescript/assets/js/58.2569019f.js"><link rel="prefetch" href="/typescript/assets/js/59.b8f7929d.js"><link rel="prefetch" href="/typescript/assets/js/6.71a548bb.js"><link rel="prefetch" href="/typescript/assets/js/60.95ac14ec.js"><link rel="prefetch" href="/typescript/assets/js/61.2d80fd78.js"><link rel="prefetch" href="/typescript/assets/js/62.0b89c246.js"><link rel="prefetch" href="/typescript/assets/js/63.a1c284f7.js"><link rel="prefetch" href="/typescript/assets/js/64.2b780694.js"><link rel="prefetch" href="/typescript/assets/js/65.ee4cb48e.js"><link rel="prefetch" href="/typescript/assets/js/66.1ef33466.js"><link rel="prefetch" href="/typescript/assets/js/67.efa35d32.js"><link rel="prefetch" href="/typescript/assets/js/68.1bf6b7b8.js"><link rel="prefetch" href="/typescript/assets/js/69.0c15538d.js"><link rel="prefetch" href="/typescript/assets/js/7.8fb4c5d3.js"><link rel="prefetch" href="/typescript/assets/js/70.0a3b2c0b.js"><link rel="prefetch" href="/typescript/assets/js/71.37e8ddb8.js"><link rel="prefetch" href="/typescript/assets/js/72.1ce373d6.js"><link rel="prefetch" href="/typescript/assets/js/73.5019730b.js"><link rel="prefetch" href="/typescript/assets/js/74.a7460721.js"><link rel="prefetch" href="/typescript/assets/js/75.f1032ef6.js"><link rel="prefetch" href="/typescript/assets/js/76.dfb1027c.js"><link rel="prefetch" href="/typescript/assets/js/77.611683ad.js"><link rel="prefetch" href="/typescript/assets/js/78.dac04a6d.js"><link rel="prefetch" href="/typescript/assets/js/79.7f256ea5.js"><link rel="prefetch" href="/typescript/assets/js/8.5ab30204.js"><link rel="prefetch" href="/typescript/assets/js/80.23d2e7fd.js"><link rel="prefetch" href="/typescript/assets/js/81.cbbd67b9.js"><link rel="prefetch" href="/typescript/assets/js/82.1a05152f.js"><link rel="prefetch" href="/typescript/assets/js/83.9de9f221.js"><link rel="prefetch" href="/typescript/assets/js/84.7446dedf.js"><link rel="prefetch" href="/typescript/assets/js/85.3e267e83.js"><link rel="prefetch" href="/typescript/assets/js/86.1c8b02c0.js"><link rel="prefetch" href="/typescript/assets/js/87.bfe359fd.js"><link rel="prefetch" href="/typescript/assets/js/88.8f8614c1.js"><link rel="prefetch" href="/typescript/assets/js/89.95dcadb3.js"><link rel="prefetch" href="/typescript/assets/js/9.678ed93c.js"><link rel="prefetch" href="/typescript/assets/js/90.f4bf22c3.js"><link rel="prefetch" href="/typescript/assets/js/91.08426091.js"><link rel="prefetch" href="/typescript/assets/js/92.2f541757.js"><link rel="prefetch" href="/typescript/assets/js/93.affbb7e4.js"><link rel="prefetch" href="/typescript/assets/js/94.6d95e042.js"><link rel="prefetch" href="/typescript/assets/js/95.eab0c9cd.js"><link rel="prefetch" href="/typescript/assets/js/96.878b7a92.js"><link rel="prefetch" href="/typescript/assets/js/97.bbf57fa2.js"><link rel="prefetch" href="/typescript/assets/js/98.d8fa6bed.js"><link rel="prefetch" href="/typescript/assets/js/99.b7f86839.js">
+    <link rel="stylesheet" href="/typescript/assets/css/0.styles.b79b352c.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/typescript/" class="home-link router-link-active"><!----> <span class="site-name">TypeScript Handbook（中文版）</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/zhongsp/TypeScript" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="新增功能" class="dropdown-title"><span class="title">新增功能</span> <span class="arrow down"></span></button> <button type="button" aria-label="新增功能" class="mobile-dropdown-title"><span class="title">新增功能</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-4.0.html" class="nav-link">
+  TypeScript 4.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.9.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  TypeScript 3.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.8.html" class="nav-link">
+  TypeScript 3.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.7.html" class="nav-link">
+  TypeScript 3.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.6.html" class="nav-link">
+  TypeScript 3.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.5.html" class="nav-link">
+  TypeScript 3.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.4.html" class="nav-link">
+  TypeScript 3.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.3.html" class="nav-link">
+  TypeScript 3.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.2.html" class="nav-link">
+  TypeScript 3.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.1.html" class="nav-link">
+  TypeScript 3.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.0.html" class="nav-link">
+  TypeScript 3.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.9.html" class="nav-link">
+  TypeScript 2.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.8.html" class="nav-link">
+  TypeScript 2.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.7.html" class="nav-link">
+  TypeScript 2.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.6.html" class="nav-link">
+  TypeScript 2.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.5.html" class="nav-link">
+  TypeScript 2.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.4.html" class="nav-link">
+  TypeScript 2.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.3.html" class="nav-link">
+  TypeScript 2.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.2.html" class="nav-link">
+  TypeScript 2.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.1.html" class="nav-link">
+  TypeScript 2.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.0.html" class="nav-link">
+  TypeScript 2.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.8.html" class="nav-link">
+  TypeScript 1.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.7.html" class="nav-link">
+  TypeScript 1.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.6.html" class="nav-link">
+  TypeScript 1.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.5.html" class="nav-link">
+  TypeScript 1.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.4.html" class="nav-link">
+  TypeScript 1.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.3.html" class="nav-link">
+  TypeScript 1.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.1.html" class="nav-link">
+  TypeScript 1.1
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Breaking Changes" class="dropdown-title"><span class="title">Breaking Changes</span> <span class="arrow down"></span></button> <button type="button" aria-label="Breaking Changes" class="mobile-dropdown-title"><span class="title">Breaking Changes</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.6.html" class="nav-link">
+  TypeScript 3.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.5.html" class="nav-link">
+  TypeScript 3.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.4.html" class="nav-link">
+  TypeScript 3.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.2.html" class="nav-link">
+  TypeScript 3.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.1.html" class="nav-link">
+  TypeScript 3.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.0.html" class="nav-link">
+  TypeScript 3.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.9.html" class="nav-link">
+  TypeScript 2.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.8.html" class="nav-link">
+  TypeScript 2.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.7.html" class="nav-link">
+  TypeScript 2.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.6.html" class="nav-link">
+  TypeScript 2.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.4.html" class="nav-link">
+  TypeScript 2.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.3.html" class="nav-link">
+  TypeScript 2.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.2.html" class="nav-link">
+  TypeScript 2.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.1.html" class="nav-link">
+  TypeScript 2.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.0.html" class="nav-link">
+  TypeScript 2.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.8.html" class="nav-link">
+  TypeScript 1.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.7.html" class="nav-link">
+  TypeScript 1.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.6.html" class="nav-link">
+  TypeScript 1.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.5.html" class="nav-link">
+  TypeScript 1.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.4.html" class="nav-link">
+  TypeScript 1.4
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="其它" class="dropdown-title"><span class="title">其它</span> <span class="arrow down"></span></button> <button type="button" aria-label="其它" class="mobile-dropdown-title"><span class="title">其它</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="http://www.typescriptlang.org/docs/home.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  TypeScript手册（英文版）
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  TypeScript语言规范
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/zhongsp/TypeScript" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="新增功能" class="dropdown-title"><span class="title">新增功能</span> <span class="arrow down"></span></button> <button type="button" aria-label="新增功能" class="mobile-dropdown-title"><span class="title">新增功能</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-4.0.html" class="nav-link">
+  TypeScript 4.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.9.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  TypeScript 3.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.8.html" class="nav-link">
+  TypeScript 3.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.7.html" class="nav-link">
+  TypeScript 3.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.6.html" class="nav-link">
+  TypeScript 3.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.5.html" class="nav-link">
+  TypeScript 3.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.4.html" class="nav-link">
+  TypeScript 3.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.3.html" class="nav-link">
+  TypeScript 3.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.2.html" class="nav-link">
+  TypeScript 3.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.1.html" class="nav-link">
+  TypeScript 3.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-3.0.html" class="nav-link">
+  TypeScript 3.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.9.html" class="nav-link">
+  TypeScript 2.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.8.html" class="nav-link">
+  TypeScript 2.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.7.html" class="nav-link">
+  TypeScript 2.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.6.html" class="nav-link">
+  TypeScript 2.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.5.html" class="nav-link">
+  TypeScript 2.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.4.html" class="nav-link">
+  TypeScript 2.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.3.html" class="nav-link">
+  TypeScript 2.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.2.html" class="nav-link">
+  TypeScript 2.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.1.html" class="nav-link">
+  TypeScript 2.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-2.0.html" class="nav-link">
+  TypeScript 2.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.8.html" class="nav-link">
+  TypeScript 1.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.7.html" class="nav-link">
+  TypeScript 1.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.6.html" class="nav-link">
+  TypeScript 1.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.5.html" class="nav-link">
+  TypeScript 1.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.4.html" class="nav-link">
+  TypeScript 1.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.3.html" class="nav-link">
+  TypeScript 1.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/release-notes/typescript-1.1.html" class="nav-link">
+  TypeScript 1.1
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="Breaking Changes" class="dropdown-title"><span class="title">Breaking Changes</span> <span class="arrow down"></span></button> <button type="button" aria-label="Breaking Changes" class="mobile-dropdown-title"><span class="title">Breaking Changes</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.6.html" class="nav-link">
+  TypeScript 3.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.5.html" class="nav-link">
+  TypeScript 3.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.4.html" class="nav-link">
+  TypeScript 3.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.2.html" class="nav-link">
+  TypeScript 3.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.1.html" class="nav-link">
+  TypeScript 3.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-3.0.html" class="nav-link">
+  TypeScript 3.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.9.html" class="nav-link">
+  TypeScript 2.9
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.8.html" class="nav-link">
+  TypeScript 2.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.7.html" class="nav-link">
+  TypeScript 2.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.6.html" class="nav-link">
+  TypeScript 2.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.4.html" class="nav-link">
+  TypeScript 2.4
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.3.html" class="nav-link">
+  TypeScript 2.3
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.2.html" class="nav-link">
+  TypeScript 2.2
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.1.html" class="nav-link">
+  TypeScript 2.1
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-2.0.html" class="nav-link">
+  TypeScript 2.0
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.8.html" class="nav-link">
+  TypeScript 1.8
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.7.html" class="nav-link">
+  TypeScript 1.7
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.6.html" class="nav-link">
+  TypeScript 1.6
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.5.html" class="nav-link">
+  TypeScript 1.5
+</a></li><li class="dropdown-item"><!----> <a href="/typescript/breaking-changes/typescript-1.4.html" class="nav-link">
+  TypeScript 1.4
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="其它" class="dropdown-title"><span class="title">其它</span> <span class="arrow down"></span></button> <button type="button" aria-label="其它" class="mobile-dropdown-title"><span class="title">其它</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="http://www.typescriptlang.org/docs/home.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  TypeScript手册（英文版）
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li><li class="dropdown-item"><!----> <a href="https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  TypeScript语言规范
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul></div></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/typescript/" aria-current="page" class="sidebar-link">TypeScript</a></li><li><section class="sidebar-group collapsable depth-0"><a href="/typescript/tutorials" class="sidebar-heading clickable"><span>快速上手</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group depth-0"><a href="/typescript/handbook" class="sidebar-heading clickable"><span>手册</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/typescript/handbook/basic-types.html" class="sidebar-link">基础类型</a></li><li><a href="/typescript/handbook/variable-declarations.html" class="sidebar-link">变量声明</a></li><li><a href="/typescript/handbook/interfaces.html" class="sidebar-link">接口</a></li><li><a href="/typescript/handbook/classes.html" class="sidebar-link">类</a></li><li><a href="/typescript/handbook/functions.html" class="sidebar-link">函数</a></li><li><a href="/typescript/handbook/literal-types.html" class="sidebar-link">字面量类型</a></li><li><a href="/typescript/handbook/generics.html" class="sidebar-link">泛型</a></li><li><a href="/typescript/handbook/enums.html" class="sidebar-link">枚举</a></li><li><a href="/typescript/handbook/type-inference.html" class="sidebar-link">类型推论</a></li><li><a href="/typescript/handbook/type-compatibility.html" class="sidebar-link">类型兼容性</a></li><li><a href="/typescript/handbook/advanced-types.html" class="sidebar-link">高级类型</a></li><li><a href="/typescript/handbook/symbols.html" class="sidebar-link">Symbols</a></li><li><a href="/typescript/handbook/iterators-and-generators.html" class="sidebar-link">Iterators 和 Generators</a></li><li><a href="/typescript/handbook/modules.html" class="sidebar-link">模块</a></li><li><a href="/typescript/handbook/namespaces.html" class="sidebar-link">命名空间</a></li><li><a href="/typescript/handbook/namespaces-and-modules.html" class="sidebar-link">命名空间和模块</a></li><li><a href="/typescript/handbook/module-resolution.html" class="sidebar-link">模块解析</a></li><li><a href="/typescript/handbook/declaration-merging.html" class="sidebar-link">声明合并</a></li><li><a href="/typescript/handbook/jsx.html" class="sidebar-link">JSX</a></li><li><a href="/typescript/handbook/decorators.html" class="sidebar-link">Decorators</a></li><li><a href="/typescript/handbook/mixins.html" class="sidebar-link">混入</a></li><li><a href="/typescript/handbook/triple-slash-directives.html" class="sidebar-link">三斜线指令</a></li><li><a href="/typescript/handbook/type-checking-javascript-files.html" class="sidebar-link">JavaScript文件里的类型检查</a></li><li><a href="/typescript/handbook/utility-types.html" class="sidebar-link">实用工具类型</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><a href="/typescript/introduction" class="sidebar-heading clickable"><span>声明文件</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><a href="/typescript/tsconfig.json" class="sidebar-heading clickable"><span>工程配置</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><a href="/typescript/wiki" class="sidebar-heading clickable"><span>wiki</span> <span class="arrow right"></span></a> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="改进类型推断和promise-all"><a href="#改进类型推断和promise-all" class="header-anchor">#</a> 改进类型推断和<code>Promise.all</code></h2> <p>TypeScript的最近几个版本（3.7前后）更新了像<code>Promise.all</code>和<code>Promise.race</code>等的函数声明。
+不巧的是，它引入了一些回归问题，尤其是在和<code>null</code>或<code>undefined</code>混合使用的场景中。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">interface</span> <span class="token class-name">Lion</span> <span class="token punctuation">{</span>
+  <span class="token function">roar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">Seal</span> <span class="token punctuation">{</span>
+  <span class="token function">singKissFromARose</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">visitZoo</span><span class="token punctuation">(</span>
+  lionExhibit<span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Lion<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  sealExhibit<span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>Seal <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token operator">&gt;</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> <span class="token punctuation">[</span>lion<span class="token punctuation">,</span> seal<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span><span class="token punctuation">[</span>lionExhibit<span class="token punctuation">,</span> sealExhibit<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  lion<span class="token punctuation">.</span><span class="token function">roar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//   ~~~~</span>
+  <span class="token comment">//  对象可能为'undefined'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>这是一种奇怪的行为！
+事实上，只有<code>sealExhibit</code>包含了<code>undefined</code>值，但是它却让<code>lion</code>也含有了<code>undefined</code>值。</p> <p>得益于<a href="https://github.com/jablko" target="_blank" rel="noopener noreferrer">Jack Bates<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>提交的<a href="https://github.com/microsoft/TypeScript/pull/34501" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>，这个问题已经被修复了，它改进了TypeScript 3.9中的类型推断流程。
+上面的例子中已经不再产生错误。
+如果你在旧版本的TypeScript中被<code>Promise</code>的这个问题所困扰，我们建议你尝试一下3.9版本！</p> <h3 id="awaited-类型"><a href="#awaited-类型" class="header-anchor">#</a> <code>awaited</code> 类型</h3> <p>如果你一直关注TypeScript，那么你可能会注意到<a href="https://github.com/microsoft/TypeScript/pull/35998" target="_blank" rel="noopener noreferrer">一个新的类型运算符<code>awaited</code><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。
+这个类型运算符的作用是准确地表达JavaScript中<code>Promise</code>的工作方式。</p> <p>我们原计划在TypeScript 3.9中支持<code>awaited</code>，但在现有的代码中测试过该特性后，我们发现还需要进行一些设计，以便让所有人能够顺利地使用它。
+因此，我们从主分支中暂时移除了这个特性。
+我们将继续试验这个特性，它不会被包含进本次发布。</p> <h2 id="速度优化"><a href="#速度优化" class="header-anchor">#</a> 速度优化</h2> <p>TypeScript 3.9提供了多项速度优化。
+TypeScript在<code>material-ui</code>和<code>styled-components</code>代码包中拥有非常慢的编辑速度和编译速度。在发现了这点后，TypeScript团队集中了精力解决性能问题。
+TypeScript优化了大型联合类型、交叉类型、有条件类型和映射类型。</p> <ul><li>https://github.com/microsoft/TypeScript/pull/36576</li> <li>https://github.com/microsoft/TypeScript/pull/36590</li> <li>https://github.com/microsoft/TypeScript/pull/36607</li> <li>https://github.com/microsoft/TypeScript/pull/36622</li> <li>https://github.com/microsoft/TypeScript/pull/36754</li> <li>https://github.com/microsoft/TypeScript/pull/36696</li></ul> <p>上面列出的每一个PR都能够减少5-10%的编译时间（对于某些代码库）。
+对于<code>material-ui</code>库而言，现在能够节约大约40%的编译时间！</p> <p>我们还调整了在编辑器中的文件重命名功能。
+从Visual Studio Code团队处得知，当重命名一个文件时，计算出需要更新的<code>import</code>语句要花费5到10秒的时间。
+TypeScript 3.9通过<a href="https://github.com/microsoft/TypeScript/pull/37055" target="_blank" rel="noopener noreferrer">改变编译器和语言服务缓存文件查询的内部实现<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>解决了这个问题。</p> <p>尽管仍有优化的空间，我们希望当前的改变能够为每个人带来更流畅的体验。</p> <h2 id="ts-expect-error-注释"><a href="#ts-expect-error-注释" class="header-anchor">#</a> <code>// @ts-expect-error</code> 注释</h2> <p>设想一下，我们正在使用TypeScript编写一个代码库，它对外开放了一个公共函数<code>doStuff</code>。
+该函数的类型声明了它接受两个<code>string</code>类型的参数，因此其它TypeScript的用户能够看到类型检查的结果，但该函数还进行了运行时的检查以便JavaScript用户能够看到一个有帮助的错误。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">function</span> <span class="token function">doStuff</span><span class="token punctuation">(</span>abc<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> xyz<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">assert</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> abc <span class="token operator">===</span> <span class="token string">&quot;string&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">assert</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> xyz <span class="token operator">===</span> <span class="token string">&quot;string&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// do some stuff</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>如果有人错误地使用了该函数，那么TypeScript用户能够看到红色的波浪线和错误提示，JavaScript用户会看到断言错误。
+然后，我们想编写一条单元测试来测试该行为。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token function">expect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">doStuff</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toThrow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>不巧的是，如果你使用TypeScript来编译单元测试，TypeScript会提示一个错误！</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token function">doStuff</span><span class="token punctuation">(</span><span class="token number">123</span><span class="token punctuation">,</span> <span class="token number">456</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//      ~~~</span>
+<span class="token comment">// 错误：类型'number'不能够赋值给类型'string'。</span>
+</code></pre></div><p>这就是TypeScript 3.9添加了<code>// @ts-expect-error</code>注释的原因。
+当一行代码带有<code>// @ts-expect-error</code>注释时，TypeScript不会提示上例的错误；
+但如果该行代码没有错误，TypeScript会提示没有必要使用<code>// @ts-expect-error</code>。</p> <p>示例，以下的代码是正确的：</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token comment">// @ts-expect-error</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">47</span> <span class="token operator">*</span> <span class="token string">&quot;octopus&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>但是下面的代码：</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token comment">// @ts-expect-error</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>会产生错误：</p> <div class="language- extra-class"><pre class="language-text"><code>未使用的 '@ts-expect-error' 指令。
+</code></pre></div><p>非常感谢<a href="https://github.com/JoshuaKGoldberg" target="_blank" rel="noopener noreferrer">Josh Goldberg<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>实现了这个功能。
+更多信息请参考<a href="https://github.com/microsoft/TypeScript/pull/36014" target="_blank" rel="noopener noreferrer">the <code>ts-expect-error</code> pull request<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。</p> <h3 id="ts-ignore-还是-ts-expect-error"><a href="#ts-ignore-还是-ts-expect-error" class="header-anchor">#</a> <code>ts-ignore</code> 还是 <code>ts-expect-error</code>?</h3> <p>某些情况下，<code>// @ts-expect-error</code>和<code>// @ts-ignore</code>是相似的，都能够阻止产生错误消息。
+两者的不同在于，如果下一行代码没有错误，那么<code>// @ts-ignore</code>不会做任何事。</p> <p>你可能会想要抛弃<code>// @ts-ignore</code>注释转而去使用<code>// @ts-expect-error</code>，并且想要知道哪一个更适用于以后的代码。
+实际上，这完全取决于你和你的团队，下面列举了一些具体情况。</p> <p>如果满足以下条件，那么选择<code>ts-expect-error</code>：</p> <ul><li>你在编写单元测试，并且想让类型系统提示错误</li> <li>你知道此处有问题，并且很快会回来改正它，只是暂时地忽略该错误</li> <li>你的团队成员都很积极，大家想要在代码回归正常后及时地删除忽略类型检查注释</li></ul> <p>如果满足以下条件，那么选择<code>ts-ignore</code>：</p> <ul><li>项目规模较大，产生了一些错误但是找不到相应代码的负责人</li> <li>正处于TypeScript版本升级的过程中，某些错误只在特定版本的TypeScript中存在，但是在其它版本中并不存在</li> <li>你没有足够的时间考虑究竟应该使用<code>// @ts-ignore</code>还是<code>// @ts-expect-error</code></li></ul> <h2 id="在条件表达式中检查未被调用的函数"><a href="#在条件表达式中检查未被调用的函数" class="header-anchor">#</a> 在条件表达式中检查未被调用的函数</h2> <p>在TypeScript 3.7中，我们引入了_未进行函数调用的检查_，当你忘记去调用某个函数时会产生错误。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">function</span> <span class="token function">hasImportantPermissions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Oops!</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>hasImportantPermissions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">//  ~~~~~~~~~~~~~~~~~~~~~~~</span>
+  <span class="token comment">// 这个条件永远返回true，因为函数已经被定义。</span>
+  <span class="token comment">// 你是否想要调用该函数？</span>
+  <span class="token function">deleteAllTheImportantFiles</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>然而，这个错误只会在<code>if</code>条件语句中才会提示。
+多亏了<a href="https://github.com/a-tarasyuk" target="_blank" rel="noopener noreferrer">Alexander Tarasyuk<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>提交的<a href="https://github.com/microsoft/TypeScript/pull/36402" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>，现在这个特性也支持在三元表达式中使用，例如<code>cond ? trueExpr : falseExpr</code>。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">declare</span> <span class="token keyword">function</span> <span class="token function">listFilesOfDirectory</span><span class="token punctuation">(</span>dirPath<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">declare</span> <span class="token keyword">function</span> <span class="token function">isDirectory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getAllFiles</span><span class="token punctuation">(</span>startFileName<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> result<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token function">traverse</span><span class="token punctuation">(</span>startFileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">traverse</span><span class="token punctuation">(</span>currentPath<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> isDirectory
+      <span class="token operator">?</span> <span class="token comment">// ~~~~~~~~~~~</span>
+        <span class="token comment">// 该条件永远返回true</span>
+        <span class="token comment">// 因为函数已经被定义。</span>
+        <span class="token comment">// 你是否想要调用该函数？</span>
+        <span class="token function">listFilesOfDirectory</span><span class="token punctuation">(</span>currentPath<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>traverse<span class="token punctuation">)</span>
+      <span class="token operator">:</span> result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>currentPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>https://github.com/microsoft/TypeScript/issues/36048</p> <h2 id="编辑器改进"><a href="#编辑器改进" class="header-anchor">#</a> 编辑器改进</h2> <p>TypeScript编译器不但支持在大部分编辑器中编写TypeScript代码，还支持着在Visual Studio系列的编辑器中编写JavaScript代码。
+针对不同的编辑器，在使用TypeScript/JavaScript的新功能时可能会有所区别，但是</p> <ul><li>Visual Studio Code支持<a href="https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript" target="_blank" rel="noopener noreferrer">选择不同的TypeScript版本<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。或者，安装<a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-next" target="_blank" rel="noopener noreferrer">JavaScript/TypeScript Nightly Extension<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>插件来使用最新的版本。</li> <li>Visual Studio 2017/2019提供了SDK安装包，以及<a href="https://www.nuget.org/packages/Microsoft.TypeScript.MSBuild" target="_blank" rel="noopener noreferrer">MSBuild安装包<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>。</li> <li>Sublime Text 3支持<a href="https://github.com/microsoft/TypeScript-Sublime-Plugin#note-using-different-versions-of-typescript" target="_blank" rel="noopener noreferrer">选择不同的TypeScript版本<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul> <h3 id="在javascript中自动导入commonjs模块"><a href="#在javascript中自动导入commonjs模块" class="header-anchor">#</a> 在JavaScript中自动导入CommonJS模块</h3> <p>在使用了CommonJS模块的JavaScript文件中，我们对自动导入功能进行了一个非常棒的改进。</p> <p>在旧的版本中，TypeScript总是假设你想要使用ECMAScript模块风格的导入语句，并且无视你的文件类型。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> fs <span class="token keyword">from</span> <span class="token string">&quot;fs&quot;</span><span class="token punctuation">;</span>
+</code></pre></div><p>然而，在编写JavaScript文件时，并不总是想要使用ECMAScript模块风格。
+非常多的用户仍然在使用CommonJS模块，例如<code>require(...)</code>。</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">&quot;fs&quot;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>现在，TypeScript会自动检测你正在使用的导入语句风格，并使用当前的导入语句风格。</p> <p><video src="https://devblogs.microsoft.com/typescript/wp-content/uploads/sites/11/2020/03/ERkaliGU0AA5anJ1.mp4"></video></p> <p>更新信息请参考<a href="https://github.com/microsoft/TypeScript/pull/37027" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p> <h3 id="code-actions-保留换行符"><a href="#code-actions-保留换行符" class="header-anchor">#</a> Code Actions 保留换行符</h3> <p>TypeScript的重构工具和快速修复工具对换行符的处理不是非常好。
+一个基本的示例如下。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">const</span> maxValue <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*start*/</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> maxValue<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// First get the squared value.</span>
+  <span class="token keyword">let</span> square <span class="token operator">=</span> i <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Now print the squared value.</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>square<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/*end*/</span>
+</code></pre></div><p>如果我们选中从<code>/*start*/</code>到<code>/*end*/</code>，然后进行“提取到函数”操作，我们会得到如下的代码。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">const</span> maxValue <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+
+<span class="token function">printSquares</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">printSquares</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> maxValue<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// First get the squared value.</span>
+    <span class="token keyword">let</span> square <span class="token operator">=</span> i <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token comment">// Now print the squared value.</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>square<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><img src="https://devblogs.microsoft.com/typescript/wp-content/uploads/sites/11/2020/03/printSquaresWithoutNewlines-3.9.gif.gif" alt="在旧版本的TypeScript中，将循环提取到函数时，换行符没有被保留。"></p> <p>这不是我们想要的 - 在<code>for</code>循环中，每条语句之间都有一个空行，但是重构后它们被移除了！
+TypeScript 3.9调整后，它会保留我们编写的代码。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token keyword">const</span> maxValue <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+
+<span class="token function">printSquares</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">printSquares</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> maxValue<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// First get the squared value.</span>
+    <span class="token keyword">let</span> square <span class="token operator">=</span> i <span class="token operator">**</span> <span class="token number">2</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Now print the squared value.</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>square<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><img src="https://devblogs.microsoft.com/typescript/wp-content/uploads/sites/11/2020/03/printSquaresWithNewlines-3.9.gif.gif" alt="在TypeScript 3.9中，将循环提取到函数时，会保留一个换行符。"></p> <p>更多信息请参考<a href="https://github.com/microsoft/TypeScript/pull/36688" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <h3 id="快速修复-缺失的返回值表达式"><a href="#快速修复-缺失的返回值表达式" class="header-anchor">#</a> 快速修复：缺失的返回值表达式</h3> <p>有时候，我们可能忘记在函数的最后添加返回值语句，尤其是在将简单箭头函数转换成还有花括号的箭头函数时。</p> <div class="language-ts extra-class"><pre class="language-ts"><code><span class="token comment">// before</span>
+<span class="token keyword">let</span> <span class="token function-variable function">f1</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token number">42</span><span class="token punctuation">;</span>
+
+<span class="token comment">// oops - not the same!</span>
+<span class="token keyword">let</span> <span class="token function-variable function">f2</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token number">42</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><p>感谢开源社区的<a href="https://github.com/Kingwl" target="_blank" rel="noopener noreferrer">Wenlu Wang<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>的<a href="https://github.com/microsoft/TypeScript/pull/26434" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>，TypeScript提供了快速修复功能来添加<code>return</code>语句，删除花括号，或者为箭头函数体添加小括号用以区分对象字面量。</p> <p><img src="https://devblogs.microsoft.com/typescript/wp-content/uploads/sites/11/2020/04/missingReturnValue-3-9.gif" alt="示例"></p> <h3 id="支持-solution-style-的tsconfig-json文件"><a href="#支持-solution-style-的tsconfig-json文件" class="header-anchor">#</a> 支持&quot;Solution Style&quot;的<code>tsconfig.json</code>文件</h3> <p>编译器需要知道一个文件被哪个配置文件所管理，因此才能够应用适当的配置选项并且计算出当前“工程”包含了哪些文件。
+在默认情况下，编辑器使用TypeScript语言服务来向上遍历父级目录以查找<code>tsconfig.json</code>文件。</p> <p>有一种特殊情况是<code>tsconfig.json</code>文件仅用于引用其它<code>tsconfig.json</code>文件。</p> <div class="language-json5 extra-class"><pre class="language-json5"><code><span class="token comment">// tsconfig.json</span>
+<span class="token punctuation">{</span>
+  <span class="token property unquoted">files</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property unquoted">references</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token property unquoted">path</span><span class="token operator">:</span> <span class="token string">&quot;./tsconfig.shared.json&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token property unquoted">path</span><span class="token operator">:</span> <span class="token string">&quot;./tsconfig.frontend.json&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token property unquoted">path</span><span class="token operator">:</span> <span class="token string">&quot;./tsconfig.backend.json&quot;</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>这个文件除了用来管理其它项目的配置文件之外什么也没做，在某些环境中它被叫作“solution”。
+这里，任何一个<code>tsconfig.*.json</code>文件都不会被TypeScript语言服务所选用，但是我们希望语言服务能够分析出当前的<code>.ts</code>文件被上述<code>tsconfig.json</code>中引用的哪个配置文件所管理。</p> <p>TypeScript 3.9为这种类型的配置方式添加了编辑器的支持。
+更多信息请参考<a href="https://github.com/microsoft/TypeScript/pull/37239" target="_blank" rel="noopener noreferrer">PR<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>.</p></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/10/2020, 1:30:41 AM</span></div></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/typescript/assets/js/app.0e06d88a.js" defer></script><script src="/typescript/assets/js/2.2c62d7e6.js" defer></script><script src="/typescript/assets/js/112.6bc6525b.js" defer></script>
+  </body>
+</html>
