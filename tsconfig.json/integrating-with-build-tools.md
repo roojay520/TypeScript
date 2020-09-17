@@ -2,15 +2,15 @@
 
 构建工具
 
-* [Babel](integrating-with-build-tools.md#babel)
-* [Browserify](integrating-with-build-tools.md#browserify)
-* [Duo](integrating-with-build-tools.md#duo)
-* [Grunt](integrating-with-build-tools.md#grunt)
-* [Gulp](integrating-with-build-tools.md#gulp)
-* [Jspm](integrating-with-build-tools.md#jspm)
-* [Webpack](integrating-with-build-tools.md#webpack)
-* [MSBuild](integrating-with-build-tools.md#msbuild)
-* [NuGet](integrating-with-build-tools.md#nuget)
+* [Babel](./integrating-with-build-tools.md#babel)
+* [Browserify](./integrating-with-build-tools.md#browserify)
+* [Duo](./integrating-with-build-tools.md#duo)
+* [Grunt](./integrating-with-build-tools.md#grunt)
+* [Gulp](./integrating-with-build-tools.md#gulp)
+* [Jspm](./integrating-with-build-tools.md#jspm)
+* [Webpack](./integrating-with-build-tools.md#webpack)
+* [MSBuild](./integrating-with-build-tools.md#msbuild)
+* [NuGet](./integrating-with-build-tools.md#nuget)
 
 ## Babel
 
